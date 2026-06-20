@@ -1,0 +1,66 @@
+name: RCFZ daily refresh + publish
+
+on:
+  schedule:
+    - cron: "0 11 * * *"   # ~7:00 AM US Eastern, every day (GitHub uses UTC)
+  workflow_dispatch: {}     # adds a "Run workflow" button to run it manually anytime
+
+permissions:
+  contents: write   # to save the data + Rising-Fast history back
+  pages: write      # to publish the website
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch today's trending RC videos
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: python fetch_trending.py
+
+      - name: Save data + Rising-Fast history back to the repo
+        run: |
+          git config user.name "rcfz-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f data/videos.js data/videos.json data/history.json || true
+          git commit -m "Daily data refresh" || echo "No changes to commit"
+          git push || echo "Nothing to push"
+
+      - name: Assemble the site (static files only — no secrets)
+        run: |
+          mkdir -p site/data
+          cp index.html manifest.webmanifest sw.js icon-192.png icon-512.png site/
+          cp data/videos.js site/data/
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publish:
+    needs: refresh
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

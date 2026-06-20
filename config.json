@@ -1,0 +1,90 @@
+{
+  "search": {
+    "published_within_days": 31,
+    "max_results_per_keyword": 50,
+    "min_views": 500,
+    "results_cap": 150,
+    "region_code": "US",
+    "relevance_language": "en",
+    "shorts_only": true,
+    "shorts_max_seconds": 180,
+    "verify_shorts": true,
+    "keywords": {
+      "plane": [
+        "rc plane",
+        "rc airplane",
+        "rc warbird",
+        "giant scale rc",
+        "rc glider",
+        "rc aerobatic"
+      ],
+      "heli": [
+        "rc helicopter",
+        "rc heli 3d",
+        "scale rc helicopter",
+        "rc helicopter flybarless"
+      ],
+      "jet": [
+        "rc jet",
+        "rc edf jet",
+        "rc turbine jet"
+      ]
+    }
+  },
+  "classify": {
+    "require_rc_signal": true,
+    "heli": ["helicopter", "heli ", " heli", "trex", "t-rex", "flybarless", "blade 3d", "goblin", "swashplate", "collective pitch", "align rc"],
+    "jet": ["jet", "edf", "ducted fan", "turbine", "afterburner"],
+    "plane": ["plane", "airplane", "aeroplane", "warbird", "glider", "sailplane", "biplane", "flying wing", "aerobatic", "3d flying", "foamie", "scale model"],
+    "rc_signals": ["rc", "r/c", "radio control", "radio controlled", "remote control"],
+    "strong_terms": ["flybarless", "edf", "ducted fan", "swashplate", "collective pitch", "warbird", "trex", "t-rex"],
+    "exclude": ["rc car", "rc truck", "rc boat", "rc tank", "monster truck", "rock crawler", "rc crawler", "rc drift", "drift car", "rc buggy", "quadcopter", "quad copter", "racing drone", "fpv drone", "camera drone", "rc submarine", "rc excavator", "rc tractor", "rc train", "rc motorcycle"]
+  },
+  "heat": {
+    "engagement_boost_cap": 0.5,
+    "comment_weight": 5,
+    "rising_percentile": 75,
+    "like_view_proxy": 18
+  },
+  "trend": {
+    "momentum_threshold": 1.2,
+    "min_velocity_now": 1000,
+    "fresh_hours": 36,
+    "retention_days": 14,
+    "max_snapshots": 8
+  },
+  "channel_blocklist": [],
+  "platforms": {
+    "tiktok": {
+      "enabled": true,
+      "actor": "clockworks/tiktok-scraper",
+      "max_items": 50,
+      "sort": "RELEVANCE",
+      "keywords": {
+        "plane": ["rc plane", "rc airplane", "rc warbird"],
+        "heli": ["rc helicopter", "rc heli"],
+        "jet": ["rc jet", "rc edf jet"]
+      }
+    },
+    "instagram": {
+      "enabled": true,
+      "actor": "patient_discovery/instagram-search-reels",
+      "max_items": 30,
+      "keywords": {
+        "plane": ["rcplane", "rcairplane"],
+        "heli": ["rchelicopter"],
+        "jet": ["rcjet"]
+      }
+    },
+    "rednote": {
+      "enabled": false,
+      "actor": "nexgendata/rednote-scraper",
+      "max_items": 15,
+      "queries": {
+        "plane": ["遥控飞机", "固定翼 航模"],
+        "heli": ["遥控直升机"],
+        "jet": ["涡喷 航模"]
+      }
+    }
+  }
+}
