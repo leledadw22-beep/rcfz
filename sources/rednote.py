@@ -27,8 +27,8 @@ def _thumb(it):
 
 def fetch(cfg, secrets):
     pcfg = cfg.get("platforms", {}).get(PLATFORM, {})
-    token = secrets.get("apify_token")
-    if not pcfg.get("enabled") or not token:
+    tokens = secrets.get("apify_tokens")
+    if not pcfg.get("enabled") or not tokens:
         return []
 
     actor = pcfg.get("actor", "nexgendata/rednote-scraper")
@@ -52,7 +52,7 @@ def fetch(cfg, secrets):
                 "apifyProxyGroups": ["RESIDENTIAL"],
                 "apifyProxyCountry": "CN",
             },
-        }, token)
+        }, tokens)
         for it in items:
             url = first(it, ["url", "noteUrl", "shareLink", "link"], "")
             if not url or url in seen:

@@ -1,9 +1,9 @@
 {
   "search": {
-    "published_within_days": 31,
+    "published_within_days": 7,
     "max_results_per_keyword": 50,
     "min_views": 500,
-    "results_cap": 150,
+    "results_cap": 60,
     "region_code": "US",
     "relevance_language": "en",
     "shorts_only": true,
@@ -58,7 +58,7 @@
     "tiktok": {
       "enabled": true,
       "actor": "clockworks/tiktok-scraper",
-      "max_items": 50,
+      "max_items": 25,
       "sort": "RELEVANCE",
       "keywords": {
         "plane": ["rc plane", "rc airplane", "rc warbird"],
@@ -67,7 +67,7 @@
       }
     },
     "instagram": {
-      "enabled": true,
+      "enabled": false,
       "actor": "patient_discovery/instagram-search-reels",
       "max_items": 30,
       "keywords": {

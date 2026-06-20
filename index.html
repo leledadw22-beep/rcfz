@@ -262,9 +262,9 @@ const TYPES = [
 const RANGES = [
   { key:'day',   label:'Today',      icon:'📅' },
   { key:'week',  label:'This Week',  icon:'🗓️' },
-  { key:'month', label:'This Month', icon:'📆' },
 ];
-const RANGE_DAYS = { day:1, week:7, month:31 };
+const RANGE_DAYS = { day:1, week:7 };
+const TOP_N = 10;
 const PLATFORMS = [
   { key:'all',       label:'All',       icon:'🌐' },
   { key:'youtube',   label:'YouTube',   icon:'▶️' },
@@ -276,7 +276,7 @@ const PLAT_META = {
   youtube:{label:'YouTube',icon:'▶️'}, tiktok:{label:'TikTok',icon:'🎵'},
   instagram:{label:'Instagram',icon:'📸'}, rednote:{label:'RedNote',icon:'📕'},
 };
-const DEFAULT_PREFS = { platform:'all', type:'all', range:'week', sort:'heat', q:'', minViews:0, minLikes:0, risingOnly:false, hideSeen:false };
+const DEFAULT_PREFS = { platform:'all', type:'all', range:'day', sort:'heat', q:'', minViews:0, minLikes:0, risingOnly:false, hideSeen:false };
 let prefs = (()=>{ try{ return {...DEFAULT_PREFS, ...JSON.parse(localStorage.getItem('rcfz_prefs'))}; }catch{ return {...DEFAULT_PREFS}; } })();
 prefs.q = '';
 let seen = new Set(JSON.parse(localStorage.getItem('rcfz_seen')||'[]'));
@@ -399,12 +399,13 @@ function render(){
   empty.style.display = list.length ? 'none':'block';
   if(!list.length){ empty.innerHTML = `<div class="ico">🔍</div><h2>No matches</h2><p>No videos fit the current filters. Try clearing search or switching tabs.</p>`; }
   grid.style.display='grid';
-  grid.innerHTML = list.map(card).join('');
+  const shown = list.slice(0, TOP_N);
+  grid.innerHTML = shown.map(card).join('');
 
   const updated = data.meta?.fetched_at ? timeAgo(data.meta.fetched_at) : '—';
-  const rangeLabel = {day:'today',week:'this week',month:'this month',all:'all time'}[prefs.range];
+  const rangeLabel = {day:'today',week:'this week'}[prefs.range] || 'this week';
   document.getElementById('statline').innerHTML =
-    `Showing <b>${list.length}</b> trending Shorts from <b>${rangeLabel}</b> · ⏱ updated <b>${updated}</b> · ranked by 🔥 heat`
+    `<b>Top ${shown.length}</b> ${rangeLabel} · ⏱ updated <b>${updated}</b> · ranked by 🔥 heat`
     + (shortlist.size?` · ★ <b>${shortlist.size}</b> shortlisted`:'');
 }
 

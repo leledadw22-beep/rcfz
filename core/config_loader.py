@@ -23,11 +23,28 @@ def load_config():
 
 
 def load_secrets():
-    """Load API keys from .env (falling back to real environment variables)."""
+    """Load API keys from .env (falling back to real environment variables).
+
+    Apify supports a failover list: set APIFY_TOKEN, then optionally APIFY_TOKEN_2..._5
+    (and/or a comma-separated APIFY_TOKENS). When one runs out of free credit, the next is used.
+    """
     if load_dotenv:
         load_dotenv(ROOT / ".env")
+
+    raw = []
+    for name in ("APIFY_TOKEN", "APIFY_TOKEN_2", "APIFY_TOKEN_3", "APIFY_TOKEN_4", "APIFY_TOKEN_5"):
+        raw.append(os.environ.get(name, ""))
+    raw.extend(os.environ.get("APIFY_TOKENS", "").split(","))
+
+    apify_tokens, seen = [], set()
+    for token in (t.strip() for t in raw):
+        if token and token not in seen:
+            seen.add(token)
+            apify_tokens.append(token)
+
     return {
         "youtube_api_key": os.environ.get("YOUTUBE_API_KEY", "").strip(),
-        "apify_token": os.environ.get("APIFY_TOKEN", "").strip(),
+        "apify_tokens": apify_tokens,
+        "apify_token": apify_tokens[0] if apify_tokens else "",
         "rednote_cookie": os.environ.get("REDNOTE_COOKIE", "").strip(),
     }

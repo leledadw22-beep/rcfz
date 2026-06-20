@@ -15,8 +15,8 @@ PLATFORM = "instagram"
 
 def fetch(cfg, secrets):
     pcfg = cfg.get("platforms", {}).get(PLATFORM, {})
-    token = secrets.get("apify_token")
-    if not pcfg.get("enabled") or not token:
+    tokens = secrets.get("apify_tokens")
+    if not pcfg.get("enabled") or not tokens:
         return []
 
     actor = pcfg.get("actor", "patient_discovery/instagram-search-reels")
@@ -30,7 +30,7 @@ def fetch(cfg, secrets):
     seen = set()
     for rc_type, keywords in groups.items():
         for kw in keywords or []:
-            items = run_actor(actor, {"search": kw, "maxItems": limit}, token)
+            items = run_actor(actor, {"search": kw, "maxItems": limit}, tokens)
             for it in items:
                 code = first(it, ["code", "shortcode", "shortCode"], "")
                 url = f"https://www.instagram.com/reel/{code}/" if code else first(it, ["video_url", "url"], "")

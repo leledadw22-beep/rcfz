@@ -13,8 +13,8 @@ PLATFORM = "tiktok"
 
 def fetch(cfg, secrets):
     pcfg = cfg.get("platforms", {}).get(PLATFORM, {})
-    token = secrets.get("apify_token")
-    if not pcfg.get("enabled") or not token:
+    tokens = secrets.get("apify_tokens")
+    if not pcfg.get("enabled") or not tokens:
         return []
 
     actor = pcfg.get("actor", "clockworks/tiktok-scraper")
@@ -34,7 +34,7 @@ def fetch(cfg, secrets):
             "searchSection": "/video",
             "shouldDownloadVideos": False,
             "shouldDownloadCovers": False,
-        }, token)
+        }, tokens)
         for it in items:
             url = first(it, ["webVideoUrl", "postPage", "url"])
             if not url:
